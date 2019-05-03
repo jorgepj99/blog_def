@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="col-lg-4 box-form">
+        <h2>Cambiar password</h2>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}<br>
+        <input type="submit" class="btn btn-success" value="Editar">
+        {{ form_errors(form) }}
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}
+{% block footer %}
+    <div class="container">
+        <h2 class="text-muted">Bienvenido a Pepe's Blog {{ user.username }}</h2>
+    </div>
+{% endblock %}

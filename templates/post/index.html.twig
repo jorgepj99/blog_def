@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    .buttons{
+        display:flex;
+        justify-content:space-around;
+    }
+    .content{
+        margin:1vh 2vw;
+        margin-bottom:4vh;
+        display:grid;
+        grid-template-rows:20vh 1fr;
+    }
+    .comments{
+        margin:3vh 2vw;
+        display:grid;
+        grid-template-columns: repeat(2,1fr);
+        grid-template-rows:repeat({{ length+1 }},1fr);
+        grid-gap:5vw;
+    }
+    .opt{
+        display:flex;
+        justify-content:space-around;
+        margin:1vh 0px;
+    }
+{% endblock %}
+{% block body %}
+    {{ parent() }}
+    <div class="content">
+        <div class="header">
+            <h3 class="card-title">{{ post.title }}</h3>
+            <p>Creado por {{ post.author }} {% if app.user != null %}{% if app.user.id == post.user.id %}| <a href="{{ path('editar_post',{'id': post.id}) }}" class="text-success">Editar este post</a> | <a href="{{ path('del_post',{'id': post.id}) }}" onclick="return confirm('¿Estás seguro?')" class="text-danger">Eliminar este posts</a>{% endif %}{% endif %}
+            <p>Fecha: {{ post.createAt|date("d-m-Y") }}</p>
+            {% for tag in tags %}
+                <span class="badge badge-pill badge-primary">{{ tag.tag }}</span>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <span class="card-text">{{ post.content}}</span>
+        </div>
+    </div>
+    <h3>Comentarios</h3>
+    {% if app.user != null %}
+        <div class="form">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    {% endif %}
+    <div class="comments">
+    {% for comment in comments %}
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">{{ comment.user.username }}</h3>
+                    <p class="text-muted">Comentario: </p>
+                    <span class="card-text" align="center">{{ comment.comment}}</span>
+                </div>
+                {% if user == comment.user.id %}
+                    <div class="opt">
+                        <a href="{{ path('editar_comment',{'id': comment.id}) }}" class="btn btn-info">Editar mi Comment</a>
+                        <a href="{{ path('del_comment',{'id': comment.id}) }}" onclick="return confirm('¿Estás seguro?')" class="btn btn-danger">Eliminar mi Comment</a>
+                    </div>
+                {% endif %}
+            </div>
+    {% endfor %}
+    </div>
+{% endblock %}

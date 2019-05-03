@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+{% block stylesheet %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+{% block css %}
+    *{
+        padding:0px;
+        margin:0px;
+    }
+    .footer_post{
+        margin-top:2vh;
+        display:flex;
+        justify-content:space-around;
+    }
+    .content{
+        margin:2vh 2vw;
+        display:grid;
+        grid-template-columns: repeat(3,1fr);
+        grid-template-rows:repeat({{ length+1 }},1fr);
+        grid-gap:5vw;
+    }
+    .new{
+        margin:2vh 2vw;
+        width:94%;
+    }
+    .new a{
+        font-size:24px;
+        width:48%;
+    }
+{% endblock %}
+{% block body %}
+    <h1 align="center">Mira nuestros Post</h1>
+    {% if app.user is null %}
+        <h3>  <a href="{{ path('app_login')}}">Logeate</a>  |  Hazte <a href="{{ path('app_register')}}">Usuario</a></h3>
+    {% else %}
+        <div class="new">
+            <a href="{{ path('new_post')}}" class="btn btn-primary">Crear un post</a>
+            <a href="{{ path('user_posts',{'id':user.id}) }}" class="btn btn-primary">Editar mis posts</a>
+        </div>
+    {% endif %}
+    <div class="content">
+        {% for post in posts %}
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <h3 class="card-title">
+                            {% if post.title|length > 14 %}
+                                {{ post.title|slice(0, 14) }}...
+                            {% else %}
+                                {{ post.title }}
+                            {% endif %}
+                        </h3>
+                        <p class="text-muted">{{ post.createAt|date("d-m-Y") }}</p>
+                        <p class="card-text">
+                            {% if post.content|length > 230 %}
+                                {{ post.content|slice(0, 230)}}...
+                            {% else %}
+                                {{ post.content }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="footer_post">
+                        <a href="{{ path('ver_post',{'id': post.id}) }}" class="btn btn-primary">Ver Post</a>
+                        {% if user == post.user %}
+                            <a href="{{ path('editar_post',{'id': post.id}) }}" class="btn btn-success">Editar mi Post</a>
+                        {% else %}
+                            <a href="{{ path('user_posts',{'id':post.user.id}) }}" class="btn btn-info">Mas de {{ post.author }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
